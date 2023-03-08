@@ -13,15 +13,15 @@ public class Main {
             System.out.println("3.add worker");
             System.out.println("4.quit");
 
-            switch (input.nextInt()) {
-                case 1:
+            switch (input.nextLine()) {
+                case "1":
                     v.Day();
                     break;
-                case 2:
+                case "2":
                     System.out.println("enter project name from (farm,castle, windmill, quarry,house): ");
                     v.AddProject(input.nextLine());
                     break;
-                case 3:
+                case "3":
                     System.out.println("enter worker task : (wood,food,metal,build)");
                     switch (input.nextLine()) {
                         case "wood" -> v.AddWorker("w", "", v::AddWood);
@@ -31,7 +31,7 @@ public class Main {
                         default -> System.out.println("bad input");
                     }
                     break;
-                case 4:
+                case "4":
                     return;
                 default:
                     System.out.println("invalid command");

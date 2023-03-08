@@ -1,11 +1,12 @@
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Village {
     private int food, wood, metal, metalPerDay = 1, woodPerDay = 1, foodPerDay = 5, daysGone, maxWorkers;
     // TODO: don't understand the swedish exactly for foodPerDay starting point
-    private List<Worker> workers = new ArrayList<>();
-    private final List<Building> buildings = new ArrayList<>();
-    private final List<Building> projects = new ArrayList<>();
+    private ArrayList<Worker> workers = new ArrayList<>();
+    private final ArrayList<Building> buildings = new ArrayList<>();
+    private final ArrayList<Building> projects = new ArrayList<>();
 
     public int getFood() {
         return food;
@@ -23,15 +24,15 @@ public class Village {
         return daysGone;
     }
 
-    public List<Worker> getWorkers() {
+    public ArrayList<Worker> getWorkers() {
         return workers;
     }
 
-    public List<Building> getBuildings() {
+    public ArrayList<Building> getBuildings() {
         return buildings;
     }
 
-    public List<Building> getProjects() {
+    public ArrayList<Building> getProjects() {
         return projects;
     }
 
@@ -191,7 +192,7 @@ public class Village {
 
 
     private void BuryDead() {
-        workers = workers.stream().filter(Worker::alive).toList();
+        workers = (ArrayList<Worker>) workers.stream().filter(Worker::alive).collect(Collectors.toList());
         if (workers.isEmpty() && food == 0)
             System.out.println("Game Over!");
     }
