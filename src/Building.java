@@ -1,4 +1,8 @@
 public abstract class Building {
+    public String getName() {
+        return name;
+    }
+
     private String name;
     public boolean complete(){return daysWorkedOn > daysToComplete;}
 

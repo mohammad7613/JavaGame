@@ -3,9 +3,9 @@ import java.util.*;
 public class Village {
     private int food, wood, metal, metalPerDay = 1, woodPerDay = 1, foodPerDay = 5, daysGone, maxWorkers;
     // TODO: don't understand the swedish exactly for foodPerDay starting point
-    private List<Worker> workers;
-    private List<Building> buildings;
-    private List<Building> projects;
+    private List<Worker> workers = new ArrayList<>();
+    private final List<Building> buildings = new ArrayList<>();
+    private final List<Building> projects = new ArrayList<>();
 
     public int getFood() {
         return food;
@@ -36,8 +36,10 @@ public class Village {
     }
 
     class Castle extends Building {
-        public Castle(String name) {
-            super(name, 50, 50, 50);
+        public Castle() {
+            super("castle", 50, 50, 50);
+            wood -= 50;
+            metal -= 50;
         }
 
         @Override
@@ -47,8 +49,10 @@ public class Village {
     }
 
     class Farm extends Building {
-        public Farm(String name) {
-            super(name, 5, 2, 5);
+        public Farm() {
+            super("farm", 5, 2, 5);
+            wood -= 5;
+            metal -= 2;
         }
 
         @Override
@@ -58,8 +62,10 @@ public class Village {
     }
 
     class Quarry extends Building {
-        public Quarry(String name) {
-            super(name, 3, 5, 7);
+        public Quarry() {
+            super("quarry", 3, 5, 7);
+            wood -= 3;
+            metal -= 5;
         }
 
         @Override
@@ -69,8 +75,10 @@ public class Village {
     }
 
     class House extends Building {
-        public House(String name) {
-            super(name, 5, 0, 3);
+        public House() {
+            super("house", 5, 0, 3);
+            wood -= 5;
+            metal -= 0;
         }
 
         @Override
@@ -80,9 +88,11 @@ public class Village {
     }
 
 
-    class Woodmill extends Building {
-        public Woodmill(String name) {
-            super(name, 5, 1, 5);
+    class WoodMill extends Building {
+        public WoodMill() {
+            super("woodmill", 5, 1, 5);
+            wood -= 5;
+            metal -= 1;
         }
 
         @Override
@@ -93,44 +103,86 @@ public class Village {
 
 
     public Village() {
-        this.food = 10;
-        // TODO: add 3 houses to building
+        food = 10;
+        buildings.add(new House());
+        buildings.add(new House());
+        buildings.add(new House());
+        buildings.forEach(Building::impact);
     }
 
 
     public void AddWorker(String name, String occupation, Task task) {
         if (maxWorkers - workers.size() > 0)
             workers.add(new Worker(name, occupation, task));
+        else System.out.println("cannot add more workers; need more houses");
     }
 
     public void AddProject(String name) {
+        switch (name) {
+            case "house":
+                if (wood >= 5)
+                    projects.add(new House());
+                else System.out.println("insufficient resources");
+                break;
+            case "farm":
+                if (wood >= 5 && metal >= 2)
+                    projects.add(new Farm());
+                else System.out.println("insufficient resources");
+                break;
+            case "castle":
+                if (wood >= 50 && metal >= 50)
+                    projects.add(new Castle());
+                else System.out.println("insufficient resources");
+                break;
+            case "woodmill":
+                if (wood >= 5 && metal >= 1)
+                    projects.add(new WoodMill());
+                else System.out.println("insufficient resources");
+                break;
+            case "quarry":
+                if (wood >= 3 && metal >= 5)
+                    projects.add(new Quarry());
+                else System.out.println("insufficient resources");
+                break;
+
+            default:
+                System.out.println("bad project name");
+        }
     }
 
     public void Day() {
+        System.out.println("Day " + daysGone);
         BuryDead();
-        workers.forEach(Worker::DoWork);
         workers.stream().limit(food).forEach(Worker::Feed);
         food = Math.max(0, food - workers.size());
+        workers.forEach(Worker::DoWork);
         daysGone++;
     }
 
-    private void AddFood() {
+     public void AddFood() {
         food += foodPerDay;
+        System.out.println("added " + foodPerDay + " food");
     }
 
-    private void AddMetal() {
+     public void AddMetal() {
         metal += metalPerDay;
+        System.out.println("added " + metalPerDay + " metal");
+
     }
 
-    private void AddWood() {
+     public void AddWood() {
         wood += woodPerDay;
+        System.out.println("added " + woodPerDay + " wood");
+
     }
 
-    private void Build() {
+     public void Build() {
         if (projects.isEmpty()) return;
         Building selectedProject = projects.get(0);
+        System.out.println("building project " + selectedProject.getName() );
         selectedProject.incrementDaysWorkedOn();
         if (selectedProject.complete()) {
+            System.out.println("project " + selectedProject.getName() + " is now complete!" );
             projects.remove(selectedProject);
             buildings.add(selectedProject);
             selectedProject.impact();
@@ -140,7 +192,7 @@ public class Village {
 
     private void BuryDead() {
         workers = workers.stream().filter(Worker::alive).toList();
-        if (workers.isEmpty())
+        if (workers.isEmpty() && food == 0)
             System.out.println("Game Over!");
     }
 
