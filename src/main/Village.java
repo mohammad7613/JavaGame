@@ -2,11 +2,25 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Village {
+    public boolean isGameOver() {
+        return gameOver;
+    }
+
+    private boolean gameOver;
     private int food, wood, metal, metalPerDay = 1, woodPerDay = 1, foodPerDay = 5, daysGone, maxWorkers;
     // TODO: don't understand the swedish exactly for foodPerDay starting point
     private ArrayList<Worker> workers = new ArrayList<>();
-    private final ArrayList<Building> buildings = new ArrayList<>();
-    private final ArrayList<Building> projects = new ArrayList<>();
+
+    public void setBuildings(ArrayList<Building> buildings) {
+        this.buildings = buildings;
+    }
+
+    public void setProjects(ArrayList<Building> projects) {
+        this.projects = projects;
+    }
+
+    private  ArrayList<Building> buildings = new ArrayList<>();
+    private  ArrayList<Building> projects = new ArrayList<>();
 
     public int getFood() {
         return food;
@@ -46,6 +60,7 @@ public class Village {
         @Override
         public void impact() {
             System.out.println("The Castle is complete;You Won! it took " + daysGone + " days to finish the game!");
+            gameOver = true;
         }
     }
 
@@ -105,6 +120,7 @@ public class Village {
 
     public Village() {
         food = 10;
+        wood = 15; // we need this wood to create 3 houses.
         buildings.add(new House());
         buildings.add(new House());
         buildings.add(new House());
@@ -193,9 +209,10 @@ public class Village {
 
     private void BuryDead() {
         workers = (ArrayList<Worker>) workers.stream().filter(Worker::alive).collect(Collectors.toList());
-        if (workers.isEmpty() && food == 0)
+        if (workers.isEmpty()){
             System.out.println("Game Over!");
+            gameOver = true;
+        }
     }
-
 
 }

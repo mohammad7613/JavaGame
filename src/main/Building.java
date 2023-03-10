@@ -4,7 +4,7 @@ public abstract class Building {
     }
 
     private String name;
-    public boolean complete(){return daysWorkedOn > daysToComplete;}
+    public boolean complete(){return daysWorkedOn >= daysToComplete;}
 
     private int woodCost, metalCost, daysWorkedOn, daysToComplete;
 
